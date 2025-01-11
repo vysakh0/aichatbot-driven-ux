@@ -4,6 +4,8 @@ import { useTodos } from "@/hooks/useTodos";
 import { useChat } from "@/hooks/useChat";
 import { format } from "date-fns";
 import { useState } from "react";
+import Link from "next/link";
+import { useProfile } from "@/hooks/useProfile";
 
 export default function Home() {
   const {
@@ -20,6 +22,7 @@ export default function Home() {
     addMessage,
     clearChat,
   } = useChat();
+  const { user } = useProfile();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -27,7 +30,15 @@ export default function Home() {
     <main className="min-h-screen p-8">
       {/* Todo List Section */}
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Todo List</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Todo List</h1>
+          <Link
+            href="/profile"
+            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+          >
+            Profile
+          </Link>
+        </div>
 
         <form onSubmit={handleSubmit} className="mb-6 flex gap-2">
           <input
@@ -108,7 +119,12 @@ export default function Home() {
           <div className="absolute bottom-16 right-0 w-96 bg-white rounded-lg shadow-xl">
             {/* Chat Header */}
             <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="text-lg font-semibold">Todo Assistant</h2>
+              <div>
+                <h2 className="text-lg font-semibold">Todo Assistant</h2>
+                {user.name && (
+                  <p className="text-sm text-gray-500">Hello, {user.name}</p>
+                )}
+              </div>
               <button
                 onClick={clearChat}
                 className="text-gray-500 hover:text-gray-700"
