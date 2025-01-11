@@ -1,29 +1,9 @@
 "use client";
 
-import { useAtom } from "jotai";
-import { todosAtom, inputAtom } from "@/store/todos";
+import { useTodos } from "@/hooks/useTodos";
 
 export default function Home() {
-  const [todos, setTodos] = useAtom(todosAtom);
-  const [input, setInput] = useAtom(inputAtom);
-
-  const addTodo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (input.trim()) {
-      setTodos([
-        ...todos,
-        {
-          id: crypto.randomUUID(),
-          text: input.trim(),
-        },
-      ]);
-      setInput("");
-    }
-  };
-
-  const removeTodo = (id: string) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
+  const { todos, input, setInput, addTodo, removeTodo } = useTodos();
 
   return (
     <main className="min-h-screen p-8">
