@@ -1,21 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useAtom } from "jotai";
+import { todosAtom, inputAtom } from "@/store/todos";
 
 export default function Home() {
-  const [todos, setTodos] = useState<string[]>([]);
-  const [input, setInput] = useState("");
+  const [todos, setTodos] = useAtom(todosAtom);
+  const [input, setInput] = useAtom(inputAtom);
 
   const addTodo = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
-      setTodos([...todos, input.trim()]);
+      setTodos([
+        ...todos,
+        {
+          id: crypto.randomUUID(),
+          text: input.trim(),
+        },
+      ]);
       setInput("");
     }
   };
 
-  const removeTodo = (index: number) => {
-    setTodos(todos.filter((_, i) => i !== index));
+  const removeTodo = (id: string) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
   return (
@@ -40,14 +47,14 @@ export default function Home() {
         </form>
 
         <ul className="space-y-2">
-          {todos.map((todo, index) => (
+          {todos.map((todo) => (
             <li
-              key={index}
+              key={todo.id}
               className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
             >
-              <span>{todo}</span>
+              <span>{todo.text}</span>
               <button
-                onClick={() => removeTodo(index)}
+                onClick={() => removeTodo(todo.id)}
                 className="text-red-500 hover:text-red-700"
               >
                 Delete
