@@ -1,11 +1,10 @@
-import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { atom } from "jotai";
 
 export interface Todo {
   id: string;
   text: string;
 }
 
-// This will persist todos in localStorage
 export const todosAtom = atomWithStorage<Todo[]>("todos", []);
-export const inputAtom = atom("");
+export const todoInputAtom = atom("");
