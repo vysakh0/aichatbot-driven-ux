@@ -45,39 +45,38 @@ export function useChat() {
 
       // Handle function calls from the AI
       if (data.functionCall) {
-        let resultMessage = "";
+        if (data.functionCall.name === "todoOperation") {
+          const args = data.functionCall.args;
+          let resultMessage = "";
 
-        // Handle navigation first
-        if (data.functionCall.name === "navigate") {
-          const destination = data.functionCall.args.destination;
-          router.push(destination);
-          resultMessage = data.reply || `Navigating to ${destination}...`;
-        } else {
-          // Handle todo operations
-          switch (data.functionCall.name) {
-            case "addTodo": {
-              const todo = await addTodo(data.functionCall.args.text);
-              resultMessage = `Added todo: "${todo.text}"`;
-              break;
-            }
-            case "removeTodo": {
-              const todo = await removeTodo(data.functionCall.args.id);
-              resultMessage = todo
+          // First handle navigation
+          if (args.navigation) {
+            router.push(args.navigation.destination);
+            resultMessage += `Navigating to ${args.navigation.destination}... `;
+          }
+
+          // Then handle todo operation
+          if (args.todo) {
+            if (args.todo.operation === "add" && args.todo.text) {
+              const todo = await addTodo(args.todo.text);
+              resultMessage += `Added todo: "${todo.text}"`;
+            } else if (args.todo.operation === "remove" && args.todo.id) {
+              const todo = await removeTodo(args.todo.id);
+              resultMessage += todo
                 ? `Removed todo: "${todo.text}"`
                 : "Todo not found";
-              break;
             }
           }
-        }
 
-        const botMessage: Message = {
-          id: crypto.randomUUID(),
-          text: resultMessage,
-          sender: "bot",
-          timestamp: Date.now(),
-        };
-        setMessages((prev) => [...prev, botMessage]);
-        return;
+          const botMessage: Message = {
+            id: crypto.randomUUID(),
+            text: resultMessage,
+            sender: "bot",
+            timestamp: Date.now(),
+          };
+          setMessages((prev) => [...prev, botMessage]);
+          return;
+        }
       }
 
       // Handle normal replies

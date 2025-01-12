@@ -8,47 +8,45 @@ const openai = new OpenAI({
 // Updated function definitions with correct routes
 const functions = [
   {
-    name: "navigate",
-    description: "Navigate to a specific page or section of the application",
+    name: "todoOperation",
+    description: "Navigate and perform todo operations",
     parameters: {
       type: "object",
       properties: {
-        destination: {
-          type: "string",
-          description: "The page or section to navigate to",
-          enum: ["/", "/profile"], // Using actual route paths
+        navigation: {
+          type: "object",
+          description: "Navigation details",
+          properties: {
+            destination: {
+              type: "string",
+              enum: ["/", "/profile"],
+              description: "The page to navigate to",
+            },
+          },
+          required: ["destination"],
+        },
+        todo: {
+          type: "object",
+          description: "Todo operation details",
+          properties: {
+            operation: {
+              type: "string",
+              enum: ["add", "remove"],
+              description: "The type of todo operation",
+            },
+            text: {
+              type: "string",
+              description: "The text for new todo (for add operation)",
+            },
+            id: {
+              type: "string",
+              description: "The todo ID (for remove operation)",
+            },
+          },
+          required: ["operation"],
         },
       },
-      required: ["destination"],
-    },
-  },
-  {
-    name: "addTodo",
-    description: "Add a new todo item to the list (can be done from any page)",
-    parameters: {
-      type: "object",
-      properties: {
-        text: {
-          type: "string",
-          description: "The text content of the todo item",
-        },
-      },
-      required: ["text"],
-    },
-  },
-  {
-    name: "removeTodo",
-    description:
-      "Remove a todo item from the list by its ID (can be done from any page)",
-    parameters: {
-      type: "object",
-      properties: {
-        id: {
-          type: "string",
-          description: "The ID of the todo item to remove",
-        },
-      },
-      required: ["id"],
+      required: ["navigation", "todo"],
     },
   },
 ];
