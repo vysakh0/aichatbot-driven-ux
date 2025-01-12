@@ -5,11 +5,26 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// These are just function definitions for OpenAI, not actual implementations
+// Updated function definitions with correct routes
 const functions = [
   {
+    name: "navigate",
+    description: "Navigate to a specific page or section of the application",
+    parameters: {
+      type: "object",
+      properties: {
+        destination: {
+          type: "string",
+          description: "The page or section to navigate to",
+          enum: ["/", "/profile"], // Using actual route paths
+        },
+      },
+      required: ["destination"],
+    },
+  },
+  {
     name: "addTodo",
-    description: "Add a new todo item to the list",
+    description: "Add a new todo item to the list (can be done from any page)",
     parameters: {
       type: "object",
       properties: {
@@ -23,7 +38,8 @@ const functions = [
   },
   {
     name: "removeTodo",
-    description: "Remove a todo item from the list by its ID",
+    description:
+      "Remove a todo item from the list by its ID (can be done from any page)",
     parameters: {
       type: "object",
       properties: {
@@ -39,21 +55,32 @@ const functions = [
 
 export async function POST(request: Request) {
   try {
-    const { message, todos } = await request.json();
+    const { message, todos, currentPath } = await request.json();
+
+    const systemMessage = `You are a helpful assistant managing a todo list. The application has two pages:
+    - Home page (/) where users manage their todos
+    - Profile page (/profile) where users can update their profile
+
+    Important workflow:
+    1. When a user wants to manage todos, first navigate to home page (/) if not already there
+    2. Then proceed with todo operations (add/remove)
+
+    Current location: ${currentPath}
+    Current todos: ${
+      todos.length > 0
+        ? todos.map((t: any) => `"${t.text}" (ID: ${t.id})`).join(", ")
+        : "no todos yet"
+    }`;
 
     const completion = await openai.chat.completions.create({
       messages: [
         {
           role: "system",
-          content: `You are a helpful assistant managing a todo list. Current todos: ${
-            todos.length > 0
-              ? todos.map((t: any) => `"${t.text}" (ID: ${t.id})`).join(", ")
-              : "no todos yet"
-          }`,
+          content: systemMessage,
         },
         { role: "user", content: message },
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       functions,
       function_call: "auto",
     });
@@ -68,6 +95,7 @@ export async function POST(request: Request) {
           name,
           args: JSON.parse(args),
         },
+        reply: responseMessage.content,
       });
     }
 
