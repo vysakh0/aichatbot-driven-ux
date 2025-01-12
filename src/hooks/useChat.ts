@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useAtom } from "jotai";
 import { chatMessagesAtom, chatInputAtom, type Message } from "@/store/chat";
 import { useTodos } from "./useTodos";
+import { useProfile } from "./useProfile";
 
 export function useChat() {
   const [messages, setMessages] = useAtom(chatMessagesAtom);
@@ -10,6 +11,7 @@ export function useChat() {
   const [isLoading, setIsLoading] = useState(false);
   const { todos, addTodo, removeTodo } = useTodos();
   const router = useRouter();
+  const { profile, updateProfile } = useProfile();
 
   const addMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +38,7 @@ export function useChat() {
           message: userMessage.text,
           todos,
           currentPath: window.location.pathname,
+          profile,
         }),
       });
 
@@ -45,7 +48,7 @@ export function useChat() {
 
       // Handle function calls from the AI
       if (data.functionCall) {
-        if (data.functionCall.name === "todoOperation") {
+        if (data.functionCall.name === "multiOperation") {
           const args = data.functionCall.args;
           let resultMessage = "";
 
@@ -55,7 +58,7 @@ export function useChat() {
             resultMessage += `Navigating to ${args.navigation.destination}... `;
           }
 
-          // Then handle todo operation
+          // Handle todo operations
           if (args.todo) {
             if (args.todo.operation === "add" && args.todo.text) {
               const todo = await addTodo(args.todo.text);
@@ -65,6 +68,20 @@ export function useChat() {
               resultMessage += todo
                 ? `Removed todo: "${todo.text}"`
                 : "Todo not found";
+            }
+          }
+
+          // Handle profile updates
+          if (args.profile) {
+            const updates: Record<string, string> = {};
+            if (args.profile.name) updates.name = args.profile.name;
+            if (args.profile.email) updates.email = args.profile.email;
+
+            if (Object.keys(updates).length > 0) {
+              await updateProfile(updates); // You'll need to implement this function
+              resultMessage += `Updated profile with ${Object.entries(updates)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join(", ")}`;
             }
           }
 

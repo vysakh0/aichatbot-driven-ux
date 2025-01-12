@@ -1,15 +1,28 @@
-import { useAtom } from "jotai";
-import { userAtom, type UserProfile } from "@/store/user";
+import { atom, useAtom } from "jotai";
+
+type Profile = {
+  name: string;
+  email: string;
+};
+
+const profileAtom = atom<Profile>({
+  name: "",
+  email: "",
+});
 
 export function useProfile() {
-  const [user, setUser] = useAtom(userAtom);
+  const [profile, setProfile] = useAtom(profileAtom);
 
-  const updateProfile = (data: Partial<UserProfile>) => {
-    setUser((prev) => ({ ...prev, ...data }));
+  const updateProfile = async (updates: Partial<Profile>) => {
+    setProfile((prev) => ({
+      ...prev,
+      ...updates,
+    }));
+    return updates;
   };
 
   return {
-    user,
+    profile,
     updateProfile,
   };
 }

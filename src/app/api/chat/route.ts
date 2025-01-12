@@ -8,8 +8,9 @@ const openai = new OpenAI({
 // Updated function definitions with correct routes
 const functions = [
   {
-    name: "todoOperation",
-    description: "Navigate and perform todo operations",
+    name: "multiOperation",
+    description:
+      "Navigate and perform various operations (todos, profile updates)",
     parameters: {
       type: "object",
       properties: {
@@ -27,7 +28,7 @@ const functions = [
         },
         todo: {
           type: "object",
-          description: "Todo operation details",
+          description: "Todo operation details (optional)",
           properties: {
             operation: {
               type: "string",
@@ -45,30 +46,45 @@ const functions = [
           },
           required: ["operation"],
         },
+        profile: {
+          type: "object",
+          description: "Profile update details (optional)",
+          properties: {
+            name: {
+              type: "string",
+              description: "User's name to update",
+            },
+            email: {
+              type: "string",
+              description: "User's email to update",
+            },
+          },
+        },
       },
-      required: ["navigation", "todo"],
+      required: ["navigation"],
     },
   },
 ];
 
 export async function POST(request: Request) {
   try {
-    const { message, todos, currentPath } = await request.json();
+    const { message, todos, currentPath, profile } = await request.json();
 
-    const systemMessage = `You are a helpful assistant managing a todo list. The application has two pages:
+    const systemMessage = `You are a helpful assistant managing a todo list and user profile. The application has two pages:
     - Home page (/) where users manage their todos
-    - Profile page (/profile) where users can update their profile
+    - Profile page (/profile) where users can update their profile information (name and email)
 
-    Important workflow:
-    1. When a user wants to manage todos, first navigate to home page (/) if not already there
-    2. Then proceed with todo operations (add/remove)
+    Important workflows:
+    1. For todo operations: Navigate to home page (/) if not already there
+    2. For profile updates: Navigate to profile page (/profile) if not already there
 
     Current location: ${currentPath}
     Current todos: ${
       todos.length > 0
         ? todos.map((t: any) => `"${t.text}" (ID: ${t.id})`).join(", ")
         : "no todos yet"
-    }`;
+    }
+    Profile: ${JSON.stringify(profile)}`;
 
     const completion = await openai.chat.completions.create({
       messages: [
