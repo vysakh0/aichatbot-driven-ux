@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Chatbot-Driven UX
+
+A proof-of-concept project that demonstrates how AI-driven chat interfaces can enhance traditional web applications. This project implements a chatbot layer on top of a Todo list application to reduce user friction and streamline interactions.
+
+
+https://github.com/user-attachments/assets/b262cfc4-80b9-40cc-9236-1bbf24dd6fb7
+
+
+## Overview
+
+This project explores the intersection of conventional web UIs and conversational interfaces, using a Todo list application as a testing ground. The chatbot assists users in performing tasks with natural language commands, reducing the number of clicks and steps needed for common actions.
+
+## Features
+
+- **AI-Powered Chat Interface**: Natural language processing for task management
+- **Traditional Todo List UI**: Familiar interface with chatbot augmentation
+- **Next.js Framework**: Built with modern React and Next.js
+- **OpenAI Integration**: Leverages OpenAI's capabilities for natural language understanding
+
+## Tech Stack
+
+- Next.js
+- React
+- OpenAI API
+- TypeScript
+- Jotai (State Management)
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/vysakh0/aichatbot-driven-ux.git
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env.local
+   ```
+   Add your OpenAI API key to the `.env.local` file.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## Future Plans
 
-To learn more about Next.js, take a look at the following resources:
+- Integration with OpenAI's real-time API for enhanced responsiveness
+- Exploration of voice-based interactions
+- Development of more sophisticated agentic UI patterns
+- Expansion of natural language command capabilities
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Philosophy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project serves as a stepping stone toward fully agentic UIs in SaaS applications. While traditional interfaces work well, adding a chat-driven layer can significantly reduce friction in user interactions. The goal is to explore how AI can enhance rather than replace existing UI patterns.
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+[MIT License](LICENSE)
+
+---
+
+Built with ♥️ by [vysakh0](https://github.com/vysakh0)
